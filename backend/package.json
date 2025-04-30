@@ -4,7 +4,7 @@
   "description": "real time video calling, chat app and social app",
   "main": "server.js",
   "scripts": {
-    "dev":"nodemon server.js"
+    "dev": "nodemon server.js"
   },
   "author": "Apil Adhikari",
   "type": "module",
@@ -20,6 +20,9 @@
     "stream-chat": "^8.60.0"
   },
   "devDependencies": {
+    "@eslint/js": "^9.25.1",
+    "eslint": "^9.25.1",
+    "globals": "^16.0.0",
     "nodemon": "^3.1.10"
   }
 }
