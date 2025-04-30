@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema(
             required: [true, "A user must enter full name!"],
             trim: true,
             minLength: [5, "Full Name must be atleast 5 characers long!"],
-            maxLength: [5, "Full Name can not exceed 70 characers!"],
+            maxLength: [70, "Full Name can not exceed 70 characers!"],
         },
 
         email: {
