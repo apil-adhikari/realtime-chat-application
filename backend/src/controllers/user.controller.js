@@ -54,3 +54,30 @@ export const getRecommendedUsers = async (req, res) => {
         });
     }
 };
+
+export const getMyFriends = async (req, res) => {
+    try {
+        // Get currently logged in user
+        const currentUserId = req.user._id;
+        const user = await User.findById(currentUserId)
+            .select("friends")
+            // Populates the friends field to include fullname,nativeLanguage,learningLanguage and profilePic additionally
+            .populate(
+                "friends",
+                "fullname nativeLanguage learningLanguage profilePic"
+            );
+
+        res.status(200).json({
+            status: "success",
+            data: {
+                users: user.friends,
+            },
+        });
+    } catch (error) {
+        console.error("Error in getMyFriends controller: ", error.message);
+        res.status(500).json({
+            status: "error",
+            message: "Internal Server Error!",
+        });
+    }
+};
