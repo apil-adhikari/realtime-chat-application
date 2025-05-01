@@ -77,6 +77,9 @@ export const singup = async (req, res) => {
             secure: process.env.NODE_ENV === "production", // Only set secure to true if the environment is in production
         };
 
+        // Remove the password form the output. Not sending the password even when creating a new user ie. we should hide the password.
+        newUser.password = undefined;
+
         res.cookie("jwt", token, cookieOptions)
             .status(201)
             .json({
@@ -154,6 +157,9 @@ export const login = async (req, res) => {
             secure: process.env.NODE_ENV === "production", // Only set secure to true if the environment is in production
         };
 
+        // Remove the password form the output. Not sending the password even when creating a new user ie. we should hide the password.
+        user.password = undefined;
+
         res.cookie("jwt", token, cookieOptions).status(200).json({
             status: "success",
             data: {
@@ -171,5 +177,10 @@ export const login = async (req, res) => {
 
 // Logout
 export const logout = async (req, res) => {
-    res.send("Logout Route");
+    res.clearCookie("jwt"); // We can either directly clear the cookies
+    // res.cookie("jwt", "loggedout", { maxAge: 1000 * 1, httpOnly: true }); // Or we can set the cookies to differnt value
+    res.status(200).json({
+        status: "success",
+        message: "Logout successful",
+    });
 };
