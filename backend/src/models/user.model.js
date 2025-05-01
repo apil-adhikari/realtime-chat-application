@@ -89,6 +89,15 @@ userSchema.pre("save", async function (next) {
     }
 });
 
+// Custom Password matching function using Instance methods(availiable in document)
+userSchema.methods.matchPassword = async function (
+    candidatePassword,
+    userPassword
+) {
+    return await bcrypt.compare(candidatePassword, userPassword);
+    // return await bcrypt.compare(candidatePassword, this.password); // We can also use this.password to know the actual password in database instead of sending the hashed password from the controller
+};
+
 const User = mongoose.model("User", userSchema);
 
 export default User;

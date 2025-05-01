@@ -43,12 +43,12 @@ export const singup = async (req, res) => {
 
         // If everything is valid, we proceed to create new user
 
-        // Random Profile Image(initially)
-        const imageIndex = Math.floor(Math.random() * 100 + 1); // generate a number between 1-100
+        // Random Profile Image(initially) using Avatar Placeholder API
+        // const imageIndex = Math.floor(Math.random() * 100 + 1); // generate a number between 1-100
         const firstname = fullname.split(" ")[0];
         const lastname = fullname.split(" ")[1];
-        // const randomAvatar = `https://avatar.iran.liara.run/public/${imageIndex}.png`;
-        const randomAvatar = `https://avatar.iran.liara.run/username?username=${firstname}+${lastname}.png`;
+        // const randomAvatar = `https://avatar.iran.liara.run/public/${imageIndex}.png`; // Assigning a random image between 1-100
+        const randomAvatar = `https://avatar.iran.liara.run/username?username=${firstname}+${lastname}.png`; // generating image based on first and last name
 
         const newUser = await User.create({
             email,
@@ -71,7 +71,7 @@ export const singup = async (req, res) => {
         );
 
         const cookieOptions = {
-            maxage: 1000 * 60 * 60 * 60 * 24 * 7,
+            maxAge: 1000 * 60 * 60 * 24 * 7,
             httpOnly: true, // Prevents XSS attacks
             sameSite: "strict", // Prevents CSRf attacks
             secure: process.env.NODE_ENV === "production", // Only set secure to true if the environment is in production
@@ -96,7 +96,77 @@ export const singup = async (req, res) => {
 
 // Login
 export const login = async (req, res) => {
-    res.send("Login Route");
+    try {
+        // Get required fields
+        const { email, password } = req.body;
+
+        // Verify if they are empty
+        if (!email || !password) {
+            return res.status(400).json({
+                status: "fail",
+                message: "All fields are required!",
+            });
+        }
+
+        // Check for correct email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            return res.status(400).json({
+                status: "fail",
+                message: "Invalid email format!",
+            });
+        }
+
+        // Check for user existance
+        const user = await User.findOne({ email }).select("+password");
+        if (!user) {
+            return res.status(401).json({
+                status: "fail",
+                message: "Invalid email or password!",
+            });
+        }
+
+        // Verify the password with database
+        const isPasswordCorrect = await user.matchPassword(
+            password, // Password entered
+            user.password // Password saved in database
+        );
+        if (!isPasswordCorrect) {
+            return res.status(401).json({
+                status: "fail",
+                message: "Invalid email or password!",
+            });
+        }
+
+        // If everithing is valid then create the token and send it along with response
+        const token = jwt.sign(
+            { userId: user._id },
+            process.env.JWT_SECRET_KEY,
+            {
+                expiresIn: "7d",
+            }
+        );
+
+        const cookieOptions = {
+            maxAge: 1000 * 60 * 60 * 24 * 7,
+            httpOnly: true, // Prevents XSS attacks
+            sameSite: "strict", // Prevents CSRf attacks
+            secure: process.env.NODE_ENV === "production", // Only set secure to true if the environment is in production
+        };
+
+        res.cookie("jwt", token, cookieOptions).status(200).json({
+            status: "success",
+            data: {
+                user,
+            },
+        });
+    } catch (error) {
+        console.log("Error in login controller:", error);
+        res.status(500).json({
+            status: "error",
+            message: "Internal Server Error!",
+        });
+    }
 };
 
 // Logout
