@@ -196,3 +196,6 @@ export const logout = async (req, res) => {
         message: "Logout successful",
     });
 };
+
+// Onboard
+export const onboard = async (req, res) => {};
