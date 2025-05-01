@@ -198,4 +198,70 @@ export const logout = async (req, res) => {
 };
 
 // Onboard
-export const onboard = async (req, res) => {};
+export const onboard = async (req, res) => {
+    try {
+        // Get the user id of loggedin user
+        const userId = req.user._id;
+        const { fullname, bio, nativeLanguage, learningLanguage, location } =
+            req.body;
+
+        // Check if the user exists
+        const userExists = await User.findById({ _id: userId });
+        if (!userExists) {
+            return res.status(400).json({
+                status: "fail",
+                message: "User not found!",
+            });
+        }
+
+        // Check for missing values
+        if (
+            !fullname ||
+            !bio ||
+            !nativeLanguage ||
+            !learningLanguage ||
+            !location
+        ) {
+            return res.status(400).json({
+                status: "fail",
+                message: "All fields are required!",
+                missingFields: [
+                    !fullname && "fullname",
+                    !bio && "bio",
+                    !nativeLanguage && "nativeLanguage",
+                    !learningLanguage && "learningLanguage",
+                    !location && "location",
+                ].filter(Boolean),
+            });
+        }
+
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            {
+                fullname,
+                bio,
+                nativeLanguage,
+                learningLanguage,
+                location,
+                isOnboarded: true,
+            },
+            {
+                runValidators: true,
+                new: true,
+            }
+        );
+
+        // TODO: Update the user info in Stream as well
+
+        res.status(200).json({
+            status: "success",
+            data: { user: updatedUser },
+        });
+    } catch (error) {
+        console.log("Onboarding error: ", error);
+        res.status(500).json({
+            status: "error",
+            message: "Internal Server Error!",
+        });
+    }
+};

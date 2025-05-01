@@ -34,7 +34,7 @@ export const protectRoute = async (req, res, next) => {
 
         // Verify the token[Check if the payload is changed]
         const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
-        console.log(decoded);
+        // console.log(decoded);
 
         if (!decode) {
             return res.status(401).json({
@@ -56,7 +56,6 @@ export const protectRoute = async (req, res, next) => {
         // Grant access to protected route
         // GRANT ACCESS TO PROTECTED ROUTE
         req.user = user;
-        console.log(req.user);
         next();
     } catch (error) {
         console.log("Error in protectRoute controller: ", error);
