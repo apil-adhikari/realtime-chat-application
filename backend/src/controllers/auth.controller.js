@@ -251,7 +251,23 @@ export const onboard = async (req, res) => {
             }
         );
 
-        // TODO: Update the user info in Stream as well
+        // Update Stream User Info as well
+        try {
+            await upsertStreamUser({
+                id: updatedUser._id.toString(),
+                name: updatedUser.fullname,
+                image: updatedUser.profilePic,
+            });
+
+            console.log(
+                `Stream user updated after onboarding for ${updatedUser.fullname}`
+            );
+        } catch (streamError) {
+            console.log(
+                "Error updating Stream user during onboarding: ",
+                streamError.message
+            );
+        }
 
         res.status(200).json({
             status: "success",
