@@ -240,3 +240,43 @@ export const updateFriendRequestStatus = async (req, res) => {
         });
     }
 };
+
+// Get friend requests
+export const getAllFriendRequest = async (req, res) => {
+    try {
+        // get all the incoming requests where I am the recipient and the status of the request is "pending"
+        const incomingFriendRequest = await FriendRequest.find({
+            recipient: req.user.id,
+            status: "pending",
+        }).populate(
+            "sender",
+            "fullname profilePic nativeLanguage learningLanguage"
+        );
+
+        // GET ALL ACCEPTED REQUESTS:
+        const acceptedRequest = await FriendRequest.find({
+            sender: req.user.id,
+            status: "accepted",
+        }).populate("recipient", "fullname profilePic");
+
+        res.status(200).json({
+            status: "sucess",
+            totalIncomingFriendRequest: incomingFriendRequest.length(),
+            data: {
+                friendRequestsIncoming: incomingFriendRequest,
+                friendRequestAccepted: acceptedRequest, // Accepted by other user
+            },
+        });
+    } catch (error) {
+        console.error(
+            "Error in getAllFriendRequest controller: ",
+            error.message
+        );
+        res.status(500).json({
+            status: "error",
+            message: "Internal Server Error!",
+        });
+    }
+};
+
+// GET CONNECTIONS(ACCEPTED FRIEND REQUEST INFO)

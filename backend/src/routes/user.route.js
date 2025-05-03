@@ -5,6 +5,8 @@ import {
     getMyFriends,
     sendFriendRequest,
     updateFriendRequestStatus,
+    getAllFriendRequest,
+    getAllAcceptedFriendRequest,
 } from "../controllers/user.controller.js";
 
 const router = express.Router();
@@ -25,5 +27,11 @@ router.post("/friend-request/:id", sendFriendRequest);
 
 // Accept Friend Request Endpoint
 router.put("/friend-request", updateFriendRequestStatus);
+
+// Get all friend request
+router.get("/friend-requests", getAllFriendRequest);
+
+// Get all friend request (incoming as well as accepted by other)
+router.get("/connections", getAllAcceptedFriendRequest);
 
 export default router;
