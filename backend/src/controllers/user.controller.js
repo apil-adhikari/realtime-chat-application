@@ -166,3 +166,77 @@ export const sendFriendRequest = async (req, res) => {
         });
     }
 };
+
+// Accept or Reject friend request
+export const updateFriendRequestStatus = async (req, res) => {
+    try {
+        // Get the request id from query parameter
+        let { id: requestId } = req.query;
+        requestId = requestId.toString();
+
+        // Find friend request using that id
+        const friendRequest = await FriendRequest.findById({ _id: requestId });
+
+        if (!friendRequest) {
+            return res.status(404).json({
+                status: "fail",
+                message: "Friend request not found!",
+            });
+        }
+
+        /**
+         * Verify the current user is the recipient
+         * - Since we are accepting or rejecting the request, we must the the recipient of the requestp
+         */
+
+        if (friendRequest.recipient.toString() !== req.user.id) {
+            return res.status(403).json({
+                status: "fail",
+                message: "You are not authorized to accept this request!",
+            });
+        }
+
+        // IF THESE TESTS PASS, now proceed to either accepting or rejecting the request
+        // (we will test quey parameter)
+
+        if (req.query.requestStatus == "accept") {
+            // console.log("Request Status: ", req.query.requestStatus);
+
+            // Accept the request
+            friendRequest.status = "accepted";
+
+            // If accepted, add each user to the other's friends array
+            // $addToSet: adds elements to an array only if they do not already exist.
+
+            await User.findByIdAndUpdate(friendRequest.sender, {
+                $addToSet: { friends: friendRequest.recipient },
+            });
+
+            await User.findByIdAndUpdate(friendRequest.recipient, {
+                $addToSet: { friends: friendRequest.sender },
+            });
+
+            // If accepted, send response
+            res.status(200).json({
+                status: "success",
+                message: "Friend request accepted.",
+            });
+        } else if (req.query.requestStatus == "reject") {
+            // console.log("Request Status: ", req.query.requestStatus);
+
+            // Reject friend request and delete the friend request document as well
+            friendRequest.status = "rejected";
+            await FriendRequest.findByIdAndDelete(requestId);
+            res.status(200).json({
+                status: "success",
+                message: "Friend request rejected.",
+            });
+        }
+    } catch (error) {
+        console.error("Error in updateFriendRequest controller: ", error);
+        res.status(500).json({
+            status: "error",
+            message: "Internal Server Error!",
+        });
+    }
+};
