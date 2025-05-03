@@ -128,12 +128,14 @@ export const sendFriendRequest = async (req, res) => {
         }
 
         // 5) Check if there is existing request : either sender is me and recipient is recipientId or vice-versa
-        const existingRequest = await FriendRequest.find({
+        const existingRequest = await FriendRequest.findOne({
             $or: [
                 { sender: myId, recipient: recipientId },
                 { sender: recipientId, recipient: myId },
             ],
         });
+
+        console.log(existingRequest);
 
         if (existingRequest) {
             return res.status(400).json({
