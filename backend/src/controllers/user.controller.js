@@ -279,4 +279,33 @@ export const getAllFriendRequest = async (req, res) => {
     }
 };
 
-// GET CONNECTIONS(ACCEPTED FRIEND REQUEST INFO)
+// OUTGOING FRIEND REQUEST
+export const getOutgoingFriendRequest = async (req, res) => {
+    try {
+        // Sender should be logged in user and the request should be in pending state
+        const outgoingRequests = await FriendRequest.find({
+            sender: req.user.id,
+            status: "pending",
+        }).populate(
+            "recipient",
+            "fullname profilePic nativeLanguage learningLanguage"
+        );
+
+        // Send response
+        res.status(200).json({
+            status: "success",
+            data: {
+                friendRequest: outgoingRequests,
+            },
+        });
+    } catch (error) {
+        console.error(
+            "Error in getOutgoingFriendRequest controller: ",
+            error.message
+        );
+        res.status(500).json({
+            status: "error",
+            message: "Internal Server Error!",
+        });
+    }
+};
