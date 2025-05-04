@@ -1,5 +1,6 @@
 import express from "express";
 import {
+    getMe,
     login,
     logout,
     onboard,
@@ -15,5 +16,6 @@ router.post("/login", login);
 router.post("/logout", logout);
 
 router.post("/onboarding", protectRoute, onboard);
+router.get("/me", protectRoute, getMe);
 
 export default router;

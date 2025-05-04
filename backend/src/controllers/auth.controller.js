@@ -281,3 +281,22 @@ export const onboard = async (req, res) => {
         });
     }
 };
+
+// GET ME: get authenticated user
+export const getMe = async (req, res) => {
+    try {
+        const user = req.user;
+        res.status(200).json({
+            status: "success",
+            data: {
+                user,
+            },
+        });
+    } catch (error) {
+        console.error("Error in getMe controller: ", error.message);
+        res.status(500).json({
+            status: "error",
+            message: "Internal Server Error!",
+        });
+    }
+};

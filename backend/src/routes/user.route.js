@@ -7,7 +7,6 @@ import {
     updateFriendRequestStatus,
     getAllFriendRequest,
     getOutgoingFriendRequest,
-    getMe,
 } from "../controllers/user.controller.js";
 
 const router = express.Router();
@@ -18,8 +17,6 @@ router.use(protectRoute);
 // Get recommended users
 router.get("/", getRecommendedUsers);
 router.get("/friends", getMyFriends);
-
-router.get("/me", getMe);
 
 // Send friend request Endpoint
 // URL with id parameter: http://localhost:8000/api/v1/users/friend-request/04f645323fjsdjfksdflsd => The /:id is a placeholder, so we cannot pass id as query but we need to pass the id as path
