@@ -83,6 +83,25 @@ export const getMyFriends = async (req, res) => {
     }
 };
 
+// GET ME
+export const getMe = async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id);
+        res.status(200).json({
+            status: "success",
+            data: {
+                user,
+            },
+        });
+    } catch (error) {
+        console.error("Error in getMe controller: ", error.message);
+        res.status(500).json({
+            status: "error",
+            message: "Internal Server Error!",
+        });
+    }
+};
+
 /** Send Friend Request
  * 1) Get sender and recipient
  * 2) Prevent sending request to ourself
