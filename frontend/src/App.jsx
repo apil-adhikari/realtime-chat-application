@@ -1,7 +1,7 @@
 import React from "react";
 import "./index.css";
 
-import { Route, Routes } from "react-router";
+import { Navigate, Route, Routes } from "react-router";
 import Homepage from "./pages/HomePage.jsx";
 import SignupPage from "./pages/SignupPage.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
@@ -46,28 +46,62 @@ const App = () => {
     // console.log({ isLoading });
     // console.log({ error });
 
-    const { data, isLoading, error } = useQuery({
-        queryKey: ["user"],
+    const {
+        data: authData,
+        isLoading,
+        error,
+    } = useQuery({
+        queryKey: ["authUser"],
         queryFn: async () => {
-            const res = await axiosInstance.get("/users/me");
+            const res = await axiosInstance.get("/auth/me");
             return res.data;
         },
-        retry: false,
+        retry: false, // auth check (do not retry to do request)
     });
 
-    console.log(data);
+    // console.log(authData?.data.user);
+    const authUser = authData?.data.user;
 
     return (
         <div className="h-screen" data-theme="night">
             {/* SETTING UP OUR ROUTES */}
             <Routes>
-                <Route path="/" element={<Homepage />} />
-                <Route path="/signup" element={<SignupPage />} />
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/notifications" element={<NotificationPage />} />
-                <Route path="/onboarding" element={<OnboardingPage />} />
-                <Route path="/call" element={<CallPage />} />
-                <Route path="/chat" element={<ChatPage />} />
+                <Route
+                    path="/"
+                    element={authUser ? <Homepage /> : <Navigate to="/login" />}
+                />
+                <Route
+                    path="/signup"
+                    element={!authUser ? <SignupPage /> : <Navigate to="/" />}
+                />
+                <Route
+                    path="/login"
+                    element={!authUser ? <LoginPage /> : <Navigate to="/" />}
+                />
+                <Route
+                    path="/notifications"
+                    element={
+                        authUser ? (
+                            <NotificationPage />
+                        ) : (
+                            <Navigate to="/login" />
+                        )
+                    }
+                />
+                <Route
+                    path="/onboarding"
+                    element={
+                        authUser ? <OnboardingPage /> : <Navigate to="/login" />
+                    }
+                />
+                <Route
+                    path="/call"
+                    element={authUser ? <CallPage /> : <Navigate to="/login" />}
+                />
+                <Route
+                    path="/chat"
+                    element={authUser ? <ChatPage /> : <Navigate to="/login" />}
+                />
             </Routes>
             <Toaster />
         </div>
