@@ -46,6 +46,7 @@ const App = () => {
     // console.log({ isLoading });
     // console.log({ error });
 
+    // USING TANSTACK QUERY to get authenticated user
     const {
         data: authData,
         isLoading,
