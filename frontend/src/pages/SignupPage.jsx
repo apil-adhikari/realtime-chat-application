@@ -65,8 +65,6 @@ const SignupPage = () => {
             </div>
           )}
 
-          {error && console.log(error.response)}
-
           <div className="w-full">
             <form onSubmit={handleSignup}>
               <div className="space-y-4">
