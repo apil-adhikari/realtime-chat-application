@@ -55,7 +55,7 @@ const App = () => {
   if (isLoading) return <PageLoader />;
 
   return (
-    <div className="h-screen" data-theme="dark">
+    <div className="h-screen" data-theme="lofi">
       {/* SETTING UP OUR ROUTES */}
       <Routes>
         <Route

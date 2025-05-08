@@ -25,6 +25,14 @@ export const singup = async (req, res) => {
       });
     }
 
+    // Validate Name
+    if (fullname.length < 5) {
+      return res.status(400).json({
+        status: "fail",
+        message: "Full Name must be at least 5 characters",
+      });
+    }
+
     // Validate Password length
     if (password.length < 8) {
       return res.status(400).json({
