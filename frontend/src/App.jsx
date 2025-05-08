@@ -48,20 +48,14 @@ const App = () => {
 
   // USING TANSTACK QUERY to get authenticated user
   const { isLoading, authUser } = useAuthUser();
-  console.log(authUser);
+  // console.log(authUser);
   const isAuthenticated = Boolean(authUser);
   const isOnboarded = authUser?.isOnboarded;
-  console.log(
-    "Is Authenticated: ",
-    isAuthenticated,
-    "is Onboarded: ",
-    isOnboarded
-  );
 
   if (isLoading) return <PageLoader />;
 
   return (
-    <div className="h-screen" data-theme="night">
+    <div className="h-screen" data-theme="dark">
       {/* SETTING UP OUR ROUTES */}
       <Routes>
         <Route
@@ -89,12 +83,27 @@ const App = () => {
             isAuthenticated ? <NotificationPage /> : <Navigate to="/login" />
           }
         />
+
+        {/* FURHTER STEP CAN BE:
+          - IF USER IS AUTHENTICATED -> SHOW ONBOARDING PAGE
+          - IF USER HAS ALREADY ONBOARDED, NAVIGATE TO LOGIN PAGE
+            */}
+
         <Route
           path="/onboarding"
           element={
-            isAuthenticated ? <OnboardingPage /> : <Navigate to="/login" />
+            isAuthenticated ? (
+              !isOnboarded ? (
+                <OnboardingPage />
+              ) : (
+                <Navigate to="/" />
+              )
+            ) : (
+              <Navigate to="/login" />
+            )
           }
         />
+
         <Route
           path="/call"
           element={isAuthenticated ? <CallPage /> : <Navigate to="/login" />}

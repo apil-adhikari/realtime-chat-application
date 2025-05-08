@@ -23,6 +23,9 @@ const SignupPage = () => {
 
     // IF SUCCESS, refetch the authenticated user
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["authUser"] }),
+    // onError: (error) => {
+    //   console.log(error);
+    // },
   });
 
   // Handler function
