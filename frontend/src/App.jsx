@@ -55,7 +55,7 @@ const App = () => {
   if (isLoading) return <PageLoader />;
 
   return (
-    <div className="h-screen" data-theme="lofi">
+    <div className="h-screen" data-theme="dark">
       {/* SETTING UP OUR ROUTES */}
       <Routes>
         <Route
@@ -71,11 +71,23 @@ const App = () => {
 
         <Route
           path="/signup"
-          element={!isAuthenticated ? <SignupPage /> : <Navigate to="/" />}
+          element={
+            !isAuthenticated ? (
+              <SignupPage />
+            ) : (
+              <Navigate to={isOnboarded ? "/" : "/onboarding"} />
+            )
+          }
         />
         <Route
           path="/login"
-          element={!isAuthenticated ? <LoginPage /> : <Navigate to="/" />}
+          element={
+            !isAuthenticated ? (
+              <LoginPage />
+            ) : (
+              <Navigate to={isOnboarded ? "/" : "/onboarding"} />
+            )
+          }
         />
         <Route
           path="/notifications"

@@ -3,6 +3,7 @@ import { ShipWheelIcon } from "lucide-react";
 import { Link } from "react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { signup } from "../lib/api";
+import toast from "react-hot-toast";
 
 const SignupPage = () => {
   const [signupData, setSignupData] = useState({
@@ -22,7 +23,10 @@ const SignupPage = () => {
     mutationFn: signup,
 
     // IF SUCCESS, refetch the authenticated user
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["authUser"] }),
+    onSuccess: () => {
+      toast.success("Signup successful");
+      queryClient.invalidateQueries({ queryKey: ["authUser"] });
+    },
     // onError: (error) => {
     //   console.log(error);
     // },
@@ -47,7 +51,7 @@ const SignupPage = () => {
     // OUTER CONTAINER DIV
     <div
       className="h-screen flex items-center justify-center p-4 sm:p-6 md:p-8"
-      // data-theme="forest"
+      data-theme="forest"
     >
       {/* INNER CONTAINER DIV */}
       <div className="border border-primary/25 flex flex-col lg:flex-row w-full max-w-5xl mx-auto bg-base-100 rounded-xl shadow-lg overflow-hidden">
@@ -171,7 +175,7 @@ const SignupPage = () => {
                   )}{" "}
                 </button>
 
-                <div className="">
+                <div className="text-center mt-4">
                   <p className="text-sm">
                     Already have an account?{" "}
                     <Link to="/login" className="text-primary hover:underline">

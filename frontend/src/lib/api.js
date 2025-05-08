@@ -1,10 +1,16 @@
 import { axiosInstance } from "./axios";
 
 export const signup = async (signupData) => {
-  console.log(signupData);
+  // console.log(signupData);
   const response = await axiosInstance.post("/auth/signup", signupData);
-  console.log("RESPONSE");
-  console.log(response.data);
+  // console.log("RESPONSE");
+  // console.log(response.data);
+  return response.data;
+};
+
+export const login = async (loginData) => {
+  const response = await axiosInstance.post("/auth/login", loginData);
+  // console.log(response.data);
   return response.data;
 };
 
@@ -14,8 +20,8 @@ export const getAuthUser = async () => {
 };
 
 export const completeOnboarding = async (userData) => {
-  console.log(userData);
+  // console.log(userData);
   const response = await axiosInstance.post("/auth/onboarding", userData);
-  console.log(response.data);
+  // console.log(response.data);
   return response.data;
 };
