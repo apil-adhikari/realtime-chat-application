@@ -7,7 +7,7 @@ const Layout = ({ children, showSidebar }) => {
       <div className="flex">
         {showSidebar && <Sidebar />}
 
-        <div className="flex-1 flex flex-c">
+        <div className="flex-1 flex flex-col  ">
           <Navbar />
 
           {/* Main component to show should be passed a props to this component */}
