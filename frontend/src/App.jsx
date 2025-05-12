@@ -15,6 +15,7 @@ import { Toaster } from "react-hot-toast";
 import PageLoader from "./components/PageLoader.jsx";
 import useAuthUser from "./hooks/useAuthUser.js";
 import Layout from "./components/Layout.jsx";
+import { useThemeStore } from "./store/useThemeStore.js";
 
 // import { useQuery } from "@tanstack/react-query";
 // import axios from "axios";
@@ -47,6 +48,8 @@ const App = () => {
   // console.log({ isLoading });
   // console.log({ error });
 
+  const { theme } = useThemeStore();
+
   // USING TANSTACK QUERY to get authenticated user
   const { isLoading, authUser } = useAuthUser();
   // console.log(authUser);
@@ -56,7 +59,7 @@ const App = () => {
   if (isLoading) return <PageLoader />;
 
   return (
-    <div className="h-screen" data-theme="dark">
+    <div className="h-screen" data-theme={theme}>
       {/* SETTING UP OUR ROUTES */}
       <Routes>
         <Route
